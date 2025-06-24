@@ -1,0 +1,14 @@
+{ "columns":26,
+ "image":"..\/..\/..\/Downloads\/TopDownHouse_SmallItems-imageonline.co-merged.png",
+ "imageheight":48,
+ "imagewidth":427,
+ "margin":0,
+ "name":"lol",
+ "spacing":0,
+ "tilecount":78,
+ "tiledversion":"1.11.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}

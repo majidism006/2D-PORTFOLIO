@@ -1,0 +1,14 @@
+{ "columns":13,
+ "image":"..\/..\/..\/Downloads\/Top-Down_Retro_Interior\/TopDownHouse_FurnitureState1.png",
+ "imageheight":288,
+ "imagewidth":208,
+ "margin":0,
+ "name":"TopDownHouse_FurnitureState1",
+ "spacing":0,
+ "tilecount":234,
+ "tiledversion":"1.11.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}

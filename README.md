@@ -4,19 +4,19 @@ Welcome to my personal website: a cozy 2D pixel-art space where you can explore 
 
 ---
 
-## What's Inside?
+## What you'll find...
 
 **Interactive Pixel World**  
-Step into an apartment scene where each object has meaning — from my desk with a resume to bookshelves, frogs and cats!
+Step into an apartment scene where each object has meaning...from my desk with a resume to bookshelves, frogs and cats!
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 - **Vite** + **React**
 - **Tiled** (for designing the 2D map)
 - **Pixel art assets** from various free/open sources
-- **Vercel** (for smooth deployment)
+- **Vercel** (for deployment)
 
 ---
 

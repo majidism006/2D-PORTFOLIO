@@ -1,0 +1,14 @@
+{ "columns":47,
+ "image":"..\/..\/..\/Downloads\/Untitled_Artwork.png",
+ "imageheight":560,
+ "imagewidth":752,
+ "margin":0,
+ "name":"Untitled_Artwork",
+ "spacing":0,
+ "tilecount":1645,
+ "tiledversion":"1.11.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}

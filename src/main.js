@@ -134,7 +134,7 @@ k.scene("welcome", () => {
 // Character Selection Function
 function showCharacterSelection() {
   const characters = ["male", "female", "cat"];
-  const spacing = k.width() / 4;
+  const spacing = 200;
   const startX = k.center().x - spacing;
 
   k.add([

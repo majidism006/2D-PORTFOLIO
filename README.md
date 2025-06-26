@@ -1,4 +1,4 @@
-# Ismail's Pixel Portfolio
+# Ismail's Pixel Portfolio <img src=https://cdn.gamedevmarket.net/wp-content/uploads/20210720193021/d14fff4da482a4b97a99983beb93e12b.gif width="70" height="70">
 
 Welcome to my personal website: a cozy 2D pixel-art space where you can explore my projects, resume, and little bits of my world.
 

@@ -191,6 +191,9 @@ k.scene("main", async () => {
   const layers = mapData.layers;
 
   const map = k.add([k.sprite("map"), k.pos(0), k.scale(scaleFactor)]);
+  const mapWidth = map.width * scaleFactor;
+  const mapHeight = map.height * scaleFactor;
+
 
   // Create player with selected character
   const characterConfig = characterConfigs[selectedCharacter];
@@ -259,8 +262,20 @@ k.scene("main", async () => {
   });
 
   k.onUpdate(() => {
-    k.camPos(player.worldPos().x, player.worldPos().y - 100);
+    const camX = k.clamp(
+      player.worldPos().x,
+      k.width() / 2,
+      mapWidth - k.width() / 2
+    );
+    const camY = k.clamp(
+      player.worldPos().y - 100, // vertical offset for a nice look
+      k.height() / 2,
+      mapHeight - k.height() / 2
+    );
+
+    k.camPos(camX, camY);
   });
+
 
   k.onMouseDown((mouseBtn) => {
     if (mouseBtn !== "left" || player.isInDialogue) return;

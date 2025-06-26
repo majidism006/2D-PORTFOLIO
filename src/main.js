@@ -60,7 +60,7 @@ k.loadSprite("cat-spritesheet", "./Untitled_Artwork.png", {
 
 k.loadSprite("map", "./newmap.png");
 
-k.setBackground(k.Color.fromHex("#311047"));
+k.setBackground(k.Color.fromHex("#000000"));
 
 // Global variable to store selected character
 let selectedCharacter = null;
@@ -70,7 +70,7 @@ k.scene("welcome", () => {
   // Background
   k.add([
     k.rect(k.width(), k.height()),
-    k.color(49, 16, 71),
+    k.color(0, 0, 0),
     k.pos(0, 0)
   ]);
 
@@ -144,7 +144,7 @@ function showCharacterSelection() {
     }),
     k.pos(k.center().x, k.center().y - 180),
     k.anchor("center"),
-    k.color(255, 255, 0),
+    k.color(255, 255, 255),
     k.z(100),
   ]);
 

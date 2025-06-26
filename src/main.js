@@ -74,167 +74,110 @@ k.scene("welcome", () => {
     k.pos(0, 0)
   ]);
 
-  // Welcome text
+  // Typewriter effect for welcome text
+  const fullText = "Welcome to Ismail's Website";
+  let currentText = "";
+  let charIndex = 0;
+
   const welcomeText = k.add([
-    k.text("Welcome to Ismail's Website", {
+    k.text("", {
       size: 48,
-      font: "monospace"
+      font: "monogram"
     }),
     k.pos(k.center()),
     k.anchor("center"),
-    k.color(255, 255, 255),
-    k.scale(0)
+    k.color(255, 255, 255)
   ]);
 
-  // Animate welcome text
-  k.tween(0, 1, 1, (val) => {
-    welcomeText.scale = k.vec2(val);
-  }, k.easings.easeOutBack);
+  // Cursor for typewriter effect
+  const cursor = k.add([
+    k.text("|", {
+      size: 48,
+      font: "monogram",
+    }),
+    k.pos(k.center().x, k.center().y),
+    k.anchor("left"),
+    k.color(255, 255, 255)
+  ]);
 
-  // Show character selection after 2 seconds
-  k.wait(2, () => {
-    showCharacterSelection();
+  // Blinking cursor animation
+  let cursorVisible = true;
+  k.loop(0.5, () => {
+    cursor.opacity = cursorVisible ? 1 : 0;
+    cursorVisible = !cursorVisible;
+  });
+
+  // Typewriter animation
+  const typewriterLoop = k.loop(0.04, () => {
+    if (charIndex < fullText.length) {
+      currentText += fullText[charIndex];
+      welcomeText.text = currentText;
+      
+      // Update cursor position
+      const textWidth = welcomeText.width;
+      cursor.pos.x = k.center().x + textWidth / 2;
+      
+      charIndex++;
+    } else {
+      typewriterLoop.cancel();
+      // Show character selection after typing is complete + 2 seconds
+      k.wait(2, () => {
+        welcomeText.destroy();
+        cursor.destroy();
+        showCharacterSelection();
+      });
+    }
   });
 });
 
+
 // Character Selection Function
 function showCharacterSelection() {
-  // Create overlay
-  const overlay = k.add([
-    k.rect(k.width(), k.height()),
-    k.color(0, 0, 0),
-    k.opacity(0.7),
-    k.pos(0, 0),
-    k.z(100)
-  ]);
-
-  // Create selection popup
-  const popup = k.add([
-    k.rect(600, 400),
-    k.color(60, 30, 90),
-    k.pos(k.center()),
-    k.anchor("center"),
-    k.outline(4, k.Color.WHITE),
-    k.z(101)
-  ]);
-
-  // Title
-  k.add([
-    k.text("Select Your Character", {
-      size: 32,
-      font: "monospace"
-    }),
-    k.pos(k.center().x, k.center().y - 120),
-    k.anchor("center"),
-    k.color(255, 255, 255),
-    k.z(102)
-  ]);
-
-  // Character buttons
-  const buttonWidth = 120;
-  const buttonHeight = 80;
-  const buttonSpacing = 150;
-  
-  // Male character button
-  const maleButton = k.add([
-    k.rect(buttonWidth, buttonHeight),
-    k.color(70, 130, 180),
-    k.pos(k.center().x - buttonSpacing, k.center().y),
-    k.anchor("center"),
-    k.outline(2, k.Color.WHITE),
-    k.area(),
-    k.z(102),
-    "character-button"
-  ]);
+  const characters = ["male", "female", "cat"];
+  const spacing = 200;
+  const startX = k.center().x - spacing;
 
   k.add([
-    k.text("Male", {
-      size: 16,
-      font: "monospace"
+    k.text("Choose Your Character", {
+      size: 52,
+      font: "monogram",
     }),
-    k.pos(k.center().x - buttonSpacing, k.center().y - 10),
+    k.pos(k.center().x, k.center().y - 180),
     k.anchor("center"),
-    k.color(255, 255, 255),
-    k.z(103)
+    k.color(255, 255, 0),
+    k.z(100),
   ]);
 
-  // Female character button
-  const femaleButton = k.add([
-    k.rect(buttonWidth, buttonHeight),
-    k.color(220, 20, 60),
-    k.pos(k.center().x, k.center().y),
-    k.anchor("center"),
-    k.outline(2, k.Color.WHITE),
-    k.area(),
-    k.z(102),
-    "character-button"
-  ]);
+  characters.forEach((char, index) => {
+    const config = characterConfigs[char];
 
-  k.add([
-    k.text("Female", {
-      size: 16,
-      font: "monospace"
-    }),
-    k.pos(k.center().x, k.center().y - 10),
-    k.anchor("center"),
-    k.color(255, 255, 255),
-    k.z(103)
-  ]);
+    // Character sprite with idle animation
+    const preview = k.add([
+      k.sprite(config.spriteKey, { anim: "walk-down" }),
+      k.pos(startX + index * spacing, k.center().y),
+      k.anchor("center"),
+      k.scale(scaleFactor * 2),
+      k.area(),
+      k.z(100),
+      "character-select",
+      { char },
+    ]);
 
-  // Cat character button
-  const catButton = k.add([
-    k.rect(buttonWidth, buttonHeight),
-    k.color(255, 140, 0),
-    k.pos(k.center().x + buttonSpacing, k.center().y),
-    k.anchor("center"),
-    k.outline(2, k.Color.WHITE),
-    k.area(),
-    k.z(102),
-    "character-button"
-  ]);
-
-  k.add([
-    k.text("Cat", {
-      size: 16,
-      font: "monospace"
-    }),
-    k.pos(k.center().x + buttonSpacing, k.center().y - 10),
-    k.anchor("center"),
-    k.color(255, 255, 255),
-    k.z(103)
-  ]);
-
-  // Button hover effects
-  function addHoverEffect(button) {
-    button.onHoverUpdate(() => {
-      button.scale = k.vec2(1.1);
+    preview.onClick(() => {
+      selectedCharacter = char;
+      k.go("main");
     });
-    
-    button.onHoverEnd(() => {
-      button.scale = k.vec2(1);
+
+    // Hover bounce effect
+    preview.onHoverUpdate(() => {
+      preview.scale = k.vec2(scaleFactor * 2.2);
     });
-  }
-
-  addHoverEffect(maleButton);
-  addHoverEffect(femaleButton);
-  addHoverEffect(catButton);
-
-  // Button click handlers
-  maleButton.onClick(() => {
-    selectedCharacter = "male";
-    k.go("main");
-  });
-
-  femaleButton.onClick(() => {
-    selectedCharacter = "female";
-    k.go("main");
-  });
-
-  catButton.onClick(() => {
-    selectedCharacter = "cat";
-    k.go("main");
+    preview.onHoverEnd(() => {
+      preview.scale = k.vec2(scaleFactor * 2);
+    });
   });
 }
+
 
 // Main game scene
 k.scene("main", async () => {

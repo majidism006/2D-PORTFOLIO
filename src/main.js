@@ -1,6 +1,7 @@
 import { dialogueData, scaleFactor } from "./constants";
 import { k } from "./kaboomCtx";
 import { displayDialogue, setCamScale } from "./utils";
+import { currentCamScale } from "./utils";
 
 // Character configurations
 const characterConfigs = {
@@ -262,16 +263,19 @@ k.scene("main", async () => {
   });
 
   k.onUpdate(() => {
-    const camX = k.clamp(
-      player.worldPos().x,
-      k.width() / 2,
-      mapWidth - k.width() / 2
-    );
-    const camY = k.clamp(
-      player.worldPos().y - 100, // vertical offset for a nice look
-      k.height() / 2,
-      mapHeight - k.height() / 2
-    );
+    const screenW = k.width() / currentCamScale;
+    const screenH = k.height() / currentCamScale;
+
+    const playerX = player.worldPos().x;
+    const playerY = player.worldPos().y - 100;
+
+    const minCamX = screenW / 2;
+    const maxCamX = mapWidth - screenW / 2;
+    const minCamY = screenH / 2;
+    const maxCamY = mapHeight - screenH / 2;
+
+    const camX = k.clamp(playerX, minCamX, maxCamX);
+    const camY = k.clamp(playerY, minCamY, maxCamY);
 
     k.camPos(camX, camY);
   });

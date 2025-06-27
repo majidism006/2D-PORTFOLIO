@@ -35,11 +35,15 @@ export function displayDialogue(text, onDisplayEnd) {
   });
 }
 
+export let currentCamScale = 1;
+
 export function setCamScale(k) {
   const resizeFactor = k.width() / k.height();
   if (resizeFactor < 1) {
-    k.camScale(k.vec2(0.8));
+    currentCamScale = 0.8;
+    k.camScale(k.vec2(currentCamScale));
   } else {
-    k.camScale(k.vec2(1.3));
+    currentCamScale = 1.3;
+    k.camScale(k.vec2(currentCamScale));
   }
 }

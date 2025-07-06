@@ -324,7 +324,7 @@ k.scene("main", async () => {
           if (!welcomePopupShown) {
             k.wait(0.5, () => {
               displayDialogue(
-                "Welcome, this is Ismail's website! Interact with objects as you go. Click the C button to change characters. Refer to the checklist on the screen as you explore!",
+                "Welcome, this is Ismail's website! Interact with objects as you go. Click 'C' to change characters. Refer to the checklist on the screen as you explore!",
                 () => {
                   player.isInDialogue = false;
                 }

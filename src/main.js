@@ -216,6 +216,9 @@ k.scene("main", async () => {
     "player",
   ]);
 
+  // Flag to track if welcome popup has been shown
+  let welcomePopupShown = false;
+
   for (const layer of layers) {
     if (layer.name === "boundaries") {
       for (const boundary of layer.objects) {
@@ -250,6 +253,21 @@ k.scene("main", async () => {
             (map.pos.y + entity.y) * scaleFactor
           );
           k.add(player);
+          
+          // Show welcome popup once when player spawns
+          if (!welcomePopupShown) {
+            k.wait(0.5, () => {
+              displayDialogue(
+                "Welcome, this is Ismail's website! Interact with objects as you go. Click the C button to change characters. Refer to the checklist on the screen as you explore!",
+                () => {
+                  player.isInDialogue = false;
+                }
+              );
+              player.isInDialogue = true;
+              welcomePopupShown = true;
+            });
+          }
+          
           continue;
         }
       }

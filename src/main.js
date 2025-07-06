@@ -3,6 +3,51 @@ import { k } from "./kaboomCtx";
 import { displayDialogue, setCamScale } from "./utils";
 import { currentCamScale } from "./utils";
 
+// Checklist system
+const checklistItems = [
+  { id: "pc", name: "Laptop", completed: false },
+  { id: "cs-degree", name: "High School Diploma", completed: false },
+  { id: "sofa-table", name: "Sofa", completed: false },
+  { id: "tv", name: "TV", completed: false },
+  { id: "frog", name: "Frog", completed: false },
+  { id: "resume", name: "Resume", completed: false },
+  { id: "library", name: "Library", completed: false },
+  { id: "kitchen", name: "Kitchen", completed: false }
+];
+
+let completedItems = new Set();
+
+function initializeChecklist() {
+  const checklistContainer = document.getElementById("checklist-items");
+  checklistContainer.innerHTML = "";
+  
+  checklistItems.forEach(item => {
+    const itemElement = document.createElement("div");
+    itemElement.className = `checklist-item ${item.completed ? 'completed' : ''}`;
+    itemElement.innerHTML = `
+      <input type="checkbox" id="check-${item.id}" ${item.completed ? 'checked' : ''} disabled>
+      <label for="check-${item.id}">${item.name}</label>
+    `;
+    checklistContainer.appendChild(itemElement);
+  });
+}
+
+function markItemAsCompleted(itemId) {
+  if (completedItems.has(itemId)) return; // Already completed
+  
+  completedItems.add(itemId);
+  const item = checklistItems.find(item => item.id === itemId);
+  if (item) {
+    item.completed = true;
+    const checkbox = document.getElementById(`check-${itemId}`);
+    const itemElement = checkbox.closest('.checklist-item');
+    if (checkbox && itemElement) {
+      checkbox.checked = true;
+      itemElement.classList.add('completed');
+    }
+  }
+}
+
 // Character configurations
 const characterConfigs = {
   male: {
@@ -188,6 +233,9 @@ k.scene("main", async () => {
     return;
   }
 
+  // Initialize checklist
+  initializeChecklist();
+
   const mapData = await (await fetch("./newmap.json")).json();
   const layers = mapData.layers;
 
@@ -238,6 +286,8 @@ k.scene("main", async () => {
               dialogueData[boundary.name],
               () => (player.isInDialogue = false)
             );
+            // Mark item as completed in checklist
+            markItemAsCompleted(boundary.name);
           });
         }
       }

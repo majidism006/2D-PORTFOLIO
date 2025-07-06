@@ -3,6 +3,63 @@ import { k } from "./kaboomCtx";
 import { displayDialogue, setCamScale } from "./utils";
 import { currentCamScale } from "./utils";
 
+// Checklist system
+const checklistItems = [
+  { id: "pc", name: "Laptop", completed: false },
+  { id: "sofa-table", name: "Sofa", completed: false },
+  { id: "frog", name: "Frog", completed: false },
+  { id: "resume", name: "Resume", completed: false },
+  { id: "library", name: "Library", completed: false },
+  { id: "kitchen", name: "Kitchen", completed: false }
+];
+
+let completedItems = new Set();
+
+function initializeChecklist() {
+  const checklistContainer = document.getElementById("checklist-items");
+  checklistContainer.innerHTML = "";
+  
+  checklistItems.forEach(item => {
+    const itemElement = document.createElement("div");
+    itemElement.className = `checklist-item ${item.completed ? 'completed' : ''}`;
+    itemElement.innerHTML = `
+      <input type="checkbox" id="check-${item.id}" ${item.completed ? 'checked' : ''} disabled>
+      <label for="check-${item.id}">${item.name}</label>
+    `;
+    checklistContainer.appendChild(itemElement);
+  });
+}
+
+function markItemAsCompleted(itemId) {
+  if (completedItems.has(itemId)) return; // Already completed
+  
+  completedItems.add(itemId);
+  const item = checklistItems.find(item => item.id === itemId);
+  if (item) {
+    item.completed = true;
+    const checkbox = document.getElementById(`check-${itemId}`);
+    const itemElement = checkbox.closest('.checklist-item');
+    if (checkbox && itemElement) {
+      checkbox.checked = true;
+      itemElement.classList.add('completed');
+    }
+  }
+}
+
+function showChecklist() {
+  const checklistContainer = document.getElementById("checklist-container");
+  if (checklistContainer) {
+    checklistContainer.style.display = "block";
+  }
+}
+
+function hideChecklist() {
+  const checklistContainer = document.getElementById("checklist-container");
+  if (checklistContainer) {
+    checklistContainer.style.display = "none";
+  }
+}
+
 // Character configurations
 const characterConfigs = {
   male: {
@@ -66,8 +123,14 @@ k.setBackground(k.Color.fromHex("#000000"));
 // Global variable to store selected character
 let selectedCharacter = null;
 
+// Global variable to track if welcome popup has been shown (persists across scene changes)
+let welcomePopupShown = false;
+
 // Welcome Scene
 k.scene("welcome", () => {
+  // Hide checklist on welcome screen
+  hideChecklist();
+  
   // Background
   k.add([
     k.rect(k.width(), k.height()),
@@ -188,6 +251,10 @@ k.scene("main", async () => {
     return;
   }
 
+  // Initialize and show checklist
+  initializeChecklist();
+  showChecklist();
+
   const mapData = await (await fetch("./newmap.json")).json();
   const layers = mapData.layers;
 
@@ -216,9 +283,6 @@ k.scene("main", async () => {
     "player",
   ]);
 
-  // Flag to track if welcome popup has been shown
-  let welcomePopupShown = false;
-
   for (const layer of layers) {
     if (layer.name === "boundaries") {
       for (const boundary of layer.objects) {
@@ -238,6 +302,8 @@ k.scene("main", async () => {
               dialogueData[boundary.name],
               () => (player.isInDialogue = false)
             );
+            // Mark item as completed in checklist
+            markItemAsCompleted(boundary.name);
           });
         }
       }

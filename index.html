@@ -71,10 +71,53 @@
         flex-direction: column;
         color: rgb(238, 238, 238);
       }
+
+      .checklist {
+        position: absolute;
+        left: 2%;
+        top: 2vh;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 8px;
+        padding: 1.5rem;
+        color: white;
+        font-size: 1.2rem;
+        max-width: 300px;
+        z-index: 1000;
+      }
+
+      .checklist h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.2rem;
+        text-align: center;
+      }
+
+      .checklist-item {
+        display: flex;
+        align-items: center;
+        margin: 0.5rem 0;
+        font-size: 1.1rem;
+      }
+
+      .checklist-item input[type="checkbox"] {
+        margin-right: 0.8rem;
+        transform: scale(1.4);
+      }
+
+      .checklist-item.completed {
+        text-decoration: line-through;
+        opacity: 0.7;
+      }
     </style>
     <div id="app">
       <div>
-        <p class="note">Tap/Click around to move! Explore and interact with the environment! Click "c" to change characters.</p>
+        <p class="note"></p>
+        
+        <div id="checklist-container" class="checklist">
+          <h3>Exploration Checklist</h3>
+          <div id="checklist-items">
+            <!-- Checklist items will be populated by JavaScript -->
+          </div>
+        </div>
 
         <div id="textbox-container" style="display: none">
           <div id="textbox">

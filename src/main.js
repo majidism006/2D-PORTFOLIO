@@ -46,6 +46,20 @@ function markItemAsCompleted(itemId) {
   }
 }
 
+function showChecklist() {
+  const checklistContainer = document.getElementById("checklist-container");
+  if (checklistContainer) {
+    checklistContainer.style.display = "block";
+  }
+}
+
+function hideChecklist() {
+  const checklistContainer = document.getElementById("checklist-container");
+  if (checklistContainer) {
+    checklistContainer.style.display = "none";
+  }
+}
+
 // Character configurations
 const characterConfigs = {
   male: {
@@ -109,8 +123,14 @@ k.setBackground(k.Color.fromHex("#000000"));
 // Global variable to store selected character
 let selectedCharacter = null;
 
+// Global variable to track if welcome popup has been shown (persists across scene changes)
+let welcomePopupShown = false;
+
 // Welcome Scene
 k.scene("welcome", () => {
+  // Hide checklist on welcome screen
+  hideChecklist();
+  
   // Background
   k.add([
     k.rect(k.width(), k.height()),
@@ -231,8 +251,9 @@ k.scene("main", async () => {
     return;
   }
 
-  // Initialize checklist
+  // Initialize and show checklist
   initializeChecklist();
+  showChecklist();
 
   const mapData = await (await fetch("./newmap.json")).json();
   const layers = mapData.layers;
@@ -261,9 +282,6 @@ k.scene("main", async () => {
     },
     "player",
   ]);
-
-  // Flag to track if welcome popup has been shown
-  let welcomePopupShown = false;
 
   for (const layer of layers) {
     if (layer.name === "boundaries") {

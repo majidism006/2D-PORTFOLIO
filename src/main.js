@@ -6,7 +6,6 @@ import { currentCamScale } from "./utils";
 // Checklist system
 const checklistItems = [
   { id: "pc", name: "Laptop", completed: false },
-  { id: "cs-degree", name: "High School Diploma", completed: false },
   { id: "sofa-table", name: "Sofa", completed: false },
   { id: "tv", name: "TV", completed: false },
   { id: "frog", name: "Frog", completed: false },

@@ -126,6 +126,20 @@ let selectedCharacter = null;
 // Global variable to track if welcome popup has been shown (persists across scene changes)
 let welcomePopupShown = false;
 
+// Helper function to calculate responsive text size
+function getResponsiveTextSize(baseSize) {
+  const minSize = Math.min(k.width(), k.height());
+  // Scale based on screen size, with minimum of 24px
+  return Math.max(24, (baseSize * minSize) / 800);
+}
+
+// Helper function to calculate responsive spacing
+function getResponsiveSpacing(baseSpacing) {
+  const minSize = Math.min(k.width(), k.height());
+  // Scale spacing based on screen width
+  return (baseSpacing * k.width()) / 1200;
+}
+
 // Welcome Scene
 k.scene("welcome", () => {
   // Hide checklist on welcome screen
@@ -143,9 +157,12 @@ k.scene("welcome", () => {
   let currentText = "";
   let charIndex = 0;
 
+  // Calculate responsive text size
+  const textSize = getResponsiveTextSize(48);
+
   const welcomeText = k.add([
     k.text("", {
-      size: 48,
+      size: textSize,
       font: "monogram"
     }),
     k.pos(k.center()),
@@ -156,7 +173,7 @@ k.scene("welcome", () => {
   // Cursor for typewriter effect
   const cursor = k.add([
     k.text("|", {
-      size: 48,
+      size: textSize,
       font: "monogram",
     }),
     k.pos(k.center().x, k.center().y),
@@ -192,25 +209,48 @@ k.scene("welcome", () => {
       });
     }
   });
+
+  // Handle resize - update text sizes
+  k.onResize(() => {
+    if (welcomeText.exists() && cursor.exists()) {
+      const newTextSize = getResponsiveTextSize(48);
+      welcomeText.textSize = newTextSize;
+      cursor.textSize = newTextSize;
+      welcomeText.pos = k.center();
+      cursor.pos.x = k.center().x;
+      cursor.pos.y = k.center().y;
+    }
+  });
 });
 
 
 // Character Selection Function
 function showCharacterSelection() {
   const characters = ["male", "female", "cat"];
-  const spacing = 200;
+  
+  // Calculate responsive sizes
+  const textSize = getResponsiveTextSize(52);
+  const spacing = getResponsiveSpacing(200);
   const startX = k.center().x - spacing;
+  const titleYOffset = getResponsiveSpacing(180);
+  
+  // Calculate responsive character scale
+  const minSize = Math.min(k.width(), k.height());
+  const charScale = Math.max(1.5, (scaleFactor * 2 * minSize) / 800);
+  const charHoverScale = charScale * 1.1;
 
-  k.add([
+  const titleText = k.add([
     k.text("Choose Your Character", {
-      size: 52,
+      size: textSize,
       font: "monogram",
     }),
-    k.pos(k.center().x, k.center().y - 180),
+    k.pos(k.center().x, k.center().y - titleYOffset),
     k.anchor("center"),
     k.color(255, 255, 255),
     k.z(100),
   ]);
+
+  const characterPreviews = [];
 
   characters.forEach((char, index) => {
     const config = characterConfigs[char];
@@ -220,25 +260,56 @@ function showCharacterSelection() {
       k.sprite(config.spriteKey, { anim: "walk-down" }),
       k.pos(startX + index * spacing, k.center().y),
       k.anchor("center"),
-      k.scale(scaleFactor * 2),
+      k.scale(charScale),
       k.area(),
       k.z(100),
       "character-select",
       { char },
     ]);
 
+    // Store scales as properties for resize updates
+    preview.baseScale = charScale;
+    preview.hoverScale = charHoverScale;
+
+    characterPreviews.push(preview);
+
     preview.onClick(() => {
       selectedCharacter = char;
       k.go("main");
     });
 
-    // Hover bounce effect
+    // Hover bounce effect - use stored scales
     preview.onHoverUpdate(() => {
-      preview.scale = k.vec2(scaleFactor * 2.2);
+      preview.scale = k.vec2(preview.hoverScale);
     });
     preview.onHoverEnd(() => {
-      preview.scale = k.vec2(scaleFactor * 2);
+      preview.scale = k.vec2(preview.baseScale);
     });
+  });
+
+  // Handle resize - update positions and sizes
+  k.onResize(() => {
+    if (titleText.exists()) {
+      const newTextSize = getResponsiveTextSize(52);
+      const newSpacing = getResponsiveSpacing(200);
+      const newStartX = k.center().x - newSpacing;
+      const newTitleYOffset = getResponsiveSpacing(180);
+      const newMinSize = Math.min(k.width(), k.height());
+      const newCharScale = Math.max(1.5, (scaleFactor * 2 * newMinSize) / 800);
+      const newCharHoverScale = newCharScale * 1.1;
+
+      titleText.textSize = newTextSize;
+      titleText.pos = k.vec2(k.center().x, k.center().y - newTitleYOffset);
+
+      characterPreviews.forEach((preview, index) => {
+        if (preview.exists()) {
+          preview.pos = k.vec2(newStartX + index * newSpacing, k.center().y);
+          preview.baseScale = newCharScale;
+          preview.hoverScale = newCharHoverScale;
+          preview.scale = k.vec2(newCharScale);
+        }
+      });
+    }
   });
 }
 

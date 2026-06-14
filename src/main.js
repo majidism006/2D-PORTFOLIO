@@ -14,6 +14,24 @@ if (musicBtn) {
   });
 }
 
+// Scale the UI overlays uniformly with the viewport (like zooming the camera
+// out) so they keep their exact proportions instead of stretching/looking huge
+// on small screens. Applies to the top-left HUD and the dialogue text box.
+function scaleHUD() {
+  const scale = Math.max(
+    0.5,
+    Math.min(1, window.innerWidth / 900, window.innerHeight / 650)
+  );
+
+  const ui = document.getElementById("top-left-ui");
+  if (ui) ui.style.transform = `scale(${scale})`;
+
+  const textbox = document.getElementById("textbox");
+  if (textbox) textbox.style.transform = `scale(${scale})`;
+}
+window.addEventListener("resize", scaleHUD);
+scaleHUD();
+
 // Checklist system
 const checklistItems = [
   { id: "pc", name: "Laptop", completed: false },

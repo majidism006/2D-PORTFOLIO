@@ -2,6 +2,17 @@ import { dialogueData, scaleFactor } from "./constants";
 import { k } from "./kaboomCtx";
 import { displayDialogue, setCamScale } from "./utils";
 import { currentCamScale } from "./utils";
+import { toggleMusic, playFanfare } from "./music";
+import { celebrate } from "./confetti";
+
+// Cute pixel music toggle (top-left corner)
+const musicBtn = document.getElementById("music-toggle");
+if (musicBtn) {
+  musicBtn.addEventListener("click", () => {
+    const playing = toggleMusic();
+    musicBtn.classList.toggle("playing", playing);
+  });
+}
 
 // Checklist system
 const checklistItems = [
@@ -14,6 +25,7 @@ const checklistItems = [
 ];
 
 let completedItems = new Set();
+let celebrationShown = false;
 
 function initializeChecklist() {
   const checklistContainer = document.getElementById("checklist-items");
@@ -43,6 +55,15 @@ function markItemAsCompleted(itemId) {
       checkbox.checked = true;
       itemElement.classList.add('completed');
     }
+  }
+
+  // Everything explored! Throw a giant confetti party (once).
+  if (!celebrationShown && completedItems.size === checklistItems.length) {
+    celebrationShown = true;
+    setTimeout(() => {
+      celebrate();
+      playFanfare();
+    }, 500);
   }
 }
 

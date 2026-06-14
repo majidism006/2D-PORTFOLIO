@@ -2,7 +2,7 @@ import { dialogueData, scaleFactor } from "./constants";
 import { k } from "./kaboomCtx";
 import { displayDialogue, setCamScale } from "./utils";
 import { currentCamScale } from "./utils";
-import { toggleMusic, playFanfare } from "./music";
+import { toggleMusic, startMusic, isMusicPlaying, playFanfare } from "./music";
 import { celebrate } from "./confetti";
 
 // Cute pixel music toggle (top-left corner)
@@ -12,6 +12,26 @@ if (musicBtn) {
     const playing = toggleMusic();
     musicBtn.classList.toggle("playing", playing);
   });
+
+  // Music is ON by default. Browsers block audio until the user interacts,
+  // so show it as playing and actually kick it off on the first gesture.
+  let userToggledMusic = false;
+  musicBtn.addEventListener("click", () => (userToggledMusic = true));
+  musicBtn.classList.add("playing");
+
+  function autoplayMusic() {
+    // Respect the user if they already turned it off before interacting.
+    if (!userToggledMusic && !isMusicPlaying()) {
+      startMusic();
+      musicBtn.classList.toggle("playing", isMusicPlaying());
+    }
+    window.removeEventListener("pointerdown", autoplayMusic);
+    window.removeEventListener("keydown", autoplayMusic);
+    window.removeEventListener("touchstart", autoplayMusic);
+  }
+  window.addEventListener("pointerdown", autoplayMusic);
+  window.addEventListener("keydown", autoplayMusic);
+  window.addEventListener("touchstart", autoplayMusic);
 }
 
 // Scale the UI overlays uniformly with the viewport (like zooming the camera
